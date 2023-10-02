@@ -2,12 +2,6 @@ plugins {
   id "com.github.node-gradle.node" version "7.0.0"
 }
 
-node {
-    version = '12.22.12'
-    npmVersion = '6.14.16'
-    download = true
-}
-
 task build(type: NodeTask) {
   script = file('scripts/gradle/build.js')
 }
