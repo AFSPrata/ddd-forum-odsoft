@@ -189,3 +189,38 @@ Examples of using the API (without authentication, using postman)
   **3. After Running Tests**
 
   Stop the backend by hitting Ctrl+C in the terminal where the backend is running.
+
+  ## Distinguishing Between Unit Tests and API Tests
+
+  ### Unit Tests
+
+  **Scope:**
+  - **What they test:** Unit tests focus on testing individual units or components of your code in isolation.
+  - **Granularity:** They typically test small, self-contained functions, methods, or classes.
+  - **Dependencies:** Unit tests should avoid external dependencies like databases, network calls, or file systems. Instead, they use mock objects or stubs to isolate the unit under test.
+
+  **Naming Conventions:**
+  - **Naming pattern:** Unit tests followed the services that are in the domain layer.
+  - **Examples:** `Guard.spec.ts`, `postSlug.spec.ts`, or `postService.spec.ts`.
+
+  **Speed and Isolation:**
+  - Unit tests should be fast, allowing for quick feedback during development.
+  - They should be isolated from each other, meaning one test should not affect the outcome of another.
+
+  ## API Tests
+
+  **Scope:**
+  - **What they test:** API tests focus on testing the interactions and integrations between different parts of your software, including the endpoints and the data flow.
+  - **Granularity:** They typically test entire API endpoints, including the request and response handling.
+  - **Dependencies:** API tests often involve real external dependencies like databases, external services, or network requests.
+
+  **Naming Conventions:**
+  - **Naming pattern:** API tests may follow a naming convention related to the specific endpoint or feature they are testing.
+  - **Examples:** `Post - Create User`, `Post Login`, `Get popular posts` or `Get Me`.
+
+  **Speed and Isolation:**
+  - API tests can be slower than unit tests due to the involvement of real external services.
+  - They should still be isolated to ensure that the state of one test doesn't affect the outcome of another.
+
+  Distinguishing between Unit Tests and API Tests is primarily based on their scope, naming conventions and speed and isolation. By following these patterns and practices, it can be maintain a clear separation between these two types of tests and ensure a robust testing strategy for the software.
+

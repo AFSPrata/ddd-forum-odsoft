@@ -36,6 +36,14 @@ task generateJSDoc(type: Exec) {
   }
 }
 
+task runUnitTest(type: Exec) {
+  commandLine 'node', 'scripts/gradle/runUnitTests.js'
+
+  doLast {
+    println 'Unit Tests executed!'
+  }
+}
+
 task generateUnitTestCoverageReport(type: Exec) {
   commandLine 'node', 'scripts/gradle/generateUnitTestCoverageReport.js'
 
@@ -44,3 +52,4 @@ task generateUnitTestCoverageReport(type: Exec) {
 
   }
 }
+
