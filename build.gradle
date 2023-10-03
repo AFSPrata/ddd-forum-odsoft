@@ -44,3 +44,12 @@ task runUnitTest(type: Exec) {
   }
 }
 
+task generateUnitTestCoverageReport(type: Exec) {
+  commandLine 'node', 'scripts/gradle/generateUnitTestCoverageReport.js'
+
+  doLast {
+    println 'Unit Test Coverage Report Generated!'
+
+  }
+}
+
