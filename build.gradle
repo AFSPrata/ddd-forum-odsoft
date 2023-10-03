@@ -35,3 +35,12 @@ task generateJSDoc(type: Exec) {
     delete 'copiedJSFiles'
   }
 }
+
+task generateUnitTestCoverageReport(type: Exec) {
+  commandLine 'node', 'scripts/gradle/generateUnitTestCoverageReport.js'
+
+  doLast {
+    println 'Unit Test Coverage Report Generated!'
+
+  }
+}
