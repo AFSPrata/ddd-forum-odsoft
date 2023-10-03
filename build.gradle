@@ -67,3 +67,11 @@ task generateApiTestCoverageReport(type: Exec) {
     println 'Api Test Coverage Report Generated!'
   }
 }
+
+task generatePUSDListPopularPosts(type: Exec) {
+  commandLine 'node', 'scripts/gradle/generatePUSDListPopularPosts.js'
+
+  doLast {
+    println 'PlantUML Sequence Diagram of "List Popular Posts" route generated!'
+  }
+}

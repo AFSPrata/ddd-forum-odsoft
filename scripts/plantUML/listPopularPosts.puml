@@ -1,0 +1,21 @@
+@startuml ListPopularPosts
+actor User
+participant Server
+participant Database
+
+User -> Server: Send request with JWT token
+Server -> Server: Verify JWT token
+alt JWT token is valid?
+    Server -> Database: Get posts data from DB
+
+    alt (Get data from DB succeeded?)
+        Database -> Server: Return requested posts data
+        Server -> User: Return requested posts data
+    else (no)
+        Server -> User: Return error message of unabled to process the request
+    end
+
+else JWT token is invalid
+    Server -> User: Return error message of invalid authentication
+end
+@enduml

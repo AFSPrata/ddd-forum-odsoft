@@ -26,5 +26,5 @@ function generateJSDoc() {
   }
 }
 
-// Call the build function to start the generate JSDoc process
+// Call the function to start the generate JSDoc process
 generateJSDoc();
