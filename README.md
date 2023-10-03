@@ -222,5 +222,5 @@ Examples of using the API (without authentication, using postman)
   - API tests can be slower than unit tests due to the involvement of real external services.
   - They should still be isolated to ensure that the state of one test doesn't affect the outcome of another.
 
-  Distinguishing between Unit Tests and API Tests is primarily based on their scope, naming conventions, speed, isolation, and the tools/libraries used. By following these patterns and practices, it can be maintain a clear separation between these two types of tests and ensure a robust testing strategy for the software.
+  Distinguishing between Unit Tests and API Tests is primarily based on their scope, naming conventions and speed and isolation. By following these patterns and practices, it can be maintain a clear separation between these two types of tests and ensure a robust testing strategy for the software.
 
