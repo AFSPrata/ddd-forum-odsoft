@@ -44,3 +44,22 @@ task runAPITests(type: Exec) {
     println 'API Tests executed!'
   }
 }
+
+task runUnitTest(type: Exec) {
+  commandLine 'node', 'scripts/gradle/runUnitTests.js'
+
+  doLast {
+    println 'Unit Tests executed!'
+  }
+}
+
+task generateUnitTestCoverageReport(type: Exec) {
+  commandLine 'node', 'scripts/gradle/generateUnitTestCoverageReport.js'
+
+  doLast {
+    println 'Unit Test Coverage Report Generated!'
+
+  }
+}
+
+
