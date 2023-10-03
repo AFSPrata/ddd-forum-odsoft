@@ -3,21 +3,21 @@ const { execSync } = require('child_process');
 const path = require('path');
 
 // Define the generation process
-function runAPITests() {
-  console.log('Runing API Tests...');
+function generateApiTestCoverageReport() {
+  console.log('Runing Api Tests...');
 
   // Set the working directory to the root of the project
   const projectRoot = path.resolve(__dirname, '../../');
   process.chdir(projectRoot);
 
   try {
-    // Run Tests without coverage
-    execSync('npm run test:apiWithoutCoverage', { stdio: 'inherit' });
+    // Run Tests with coverage
+    execSync('npm run test:api', { stdio: 'inherit' });
   } catch (error) {
-    console.error('API Tests failed:', error);
+    console.error('Api Tests with coverage failed:', error);
     process.exit(1);
   }
 }
 
-// Call the function to run API Tests
-runAPITests();
+// Call the function to generate Api Tests Coverage Report
+generateApiTestCoverageReport();

@@ -36,7 +36,6 @@ task generateJSDoc(type: Exec) {
   }
 }
 
-
 task runAPITests(type: Exec) {
   commandLine 'node', 'scripts/gradle/runAPITests.js'
 
@@ -58,8 +57,13 @@ task generateUnitTestCoverageReport(type: Exec) {
 
   doLast {
     println 'Unit Test Coverage Report Generated!'
-
   }
 }
 
+task generateApiTestCoverageReport(type: Exec) {
+  commandLine 'node', 'scripts/gradle/generateApiTestCoverageReport.js'
 
+  doLast {
+    println 'Api Test Coverage Report Generated!'
+  }
+}
