@@ -1,0 +1,9 @@
+{
+    "source": {
+        "include": ["copiedJSFiles"],
+        "includePattern": ".+\\.js"
+    },
+    "opts": {
+        "destination": "docs"
+    }
+}

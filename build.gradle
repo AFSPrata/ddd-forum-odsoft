@@ -5,3 +5,33 @@ plugins {
 task build(type: NodeTask) {
   script = file('scripts/gradle/build.js')
 }
+
+task copyFiles(type: Copy) {
+    from('dist') {
+        include '**/*.js'
+        exclude '**/*.js.map'
+    }
+    into 'copiedJSFiles'
+
+    includeEmptyDirs = false
+
+    eachFile { details ->
+        def path = details.path
+        details.path = path.replaceAll('/', '_')
+    }
+
+    doLast {
+        println 'Copied files!'
+    }
+}
+
+task generateJSDoc(type: Exec) {
+  dependsOn copyFiles
+  commandLine 'node', 'scripts/gradle/generateJSDoc.js'
+
+  doLast {
+    println 'JSDoc Generated!'
+
+    delete 'copiedJSFiles'
+  }
+}
