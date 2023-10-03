@@ -19,5 +19,5 @@ function runUnitTests() {
   }
 }
 
-// Call the build function to start the generate JSDoc process
+// Call the function to run Unit Tests
 runUnitTests();
