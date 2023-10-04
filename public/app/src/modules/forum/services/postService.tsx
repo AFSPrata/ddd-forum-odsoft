@@ -7,6 +7,7 @@ import { Result } from "../../../shared/core/Result";
 import { right, left } from "../../../shared/core/Either";
 import { PostUtil } from "../utils/PostUtil";
 import { PostDTO } from "../dtos/postDTO";
+import { CommentDTO } from "../dtos/commentDTO";
 
 export interface IPostService {
   createPost (title: string, type: PostType, text?: string, link?: string): Promise<APIResponse<void>>;
@@ -55,9 +56,24 @@ export class PostService extends BaseAPI implements IPostService {
         isAuthenticated ? auth : null
       );
 
-      return right(Result.ok<Post[]>(
-        response.data.posts.map((p: PostDTO) => PostUtil.toViewModel(p)))
-      );
+     const posts: Post[] = await Promise.all(response.data.posts.map(async (p: PostDTO) => {
+        let commentsResponse;
+        try {
+          commentsResponse = await this.get('/comments?slug=' + p.slug, null, 
+          isAuthenticated ? auth : null
+        );
+        } catch (error) {
+          commentsResponse = null;
+        }
+        
+        if(commentsResponse){
+          p.numComments = commentsResponse.data.comments.filter((c: CommentDTO) => c.parentCommentId === null).length;
+        }
+
+        return PostUtil.toViewModel(p);
+      }));
+
+      return right(Result.ok<Post[]>(posts));
     } catch (err) {
       return left(err.response ? err.response.data.message : "Connection failed")
     }
