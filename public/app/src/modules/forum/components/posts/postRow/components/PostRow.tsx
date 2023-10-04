@@ -9,10 +9,11 @@ interface PostRowProps extends Post {
   onUpvoteClicked: () => void;
   onDownvoteClicked: () => void;
   isLoggedIn: boolean;
+  activeFilter: string;
 }
 
 const PostRow: React.FC<PostRowProps> = (props) => (
-  <div className="post-row">
+  <div className="post-row" style={{backgroundColor: props.activeFilter === "NEW" ? "lightgrey" :""}}>
     <Points
       onUpvoteClicked={() => props.onUpvoteClicked()}
       onDownvoteClicked={() => props.onDownvoteClicked()}
