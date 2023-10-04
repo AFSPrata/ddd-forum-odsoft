@@ -9,7 +9,7 @@ function getPopularPosts (offset?: number) {
 
     dispatch(actionCreators.getPopularPosts());
 
-    const result = await postService.getPopularPosts(offset);
+    const result = await postService.get5PopularPosts(offset);
 
     if (result.isLeft()) {
       const error: string = result.value;
