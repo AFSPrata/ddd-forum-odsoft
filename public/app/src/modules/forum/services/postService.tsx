@@ -82,6 +82,32 @@ export class PostService extends BaseAPI implements IPostService {
     }
   }
 
+  public async get5PopularPosts(offset?: number): Promise<APIResponse<Post[]>> {
+    try {
+      const accessToken = this.authService.getToken('access-token');
+      const isAuthenticated = !!accessToken === true;
+      const auth = {
+        authorization: accessToken
+      };
+      const response = await this.get('/posts/popular', { offset },
+        isAuthenticated ? auth : null
+      );
+  
+      // Sort posts by numComments in descending order
+      const sortedPosts = response.data.posts.sort((a: { numComments: number; }, b: { numComments: number; }) => b.numComments - a.numComments);
+  
+      // Take the first 5 posts
+      const popularPosts = sortedPosts.slice(0, 5);
+  
+      return right(Result.ok<Post[]>(
+        popularPosts.map((p: PostDTO) => PostUtil.toViewModel(p)))
+      );
+    } catch (err) {
+      return left(err.response ? err.response.data.message : "Connection failed");
+    }
+  }
+  
+
   public async createPost (title: string, type: PostType, text?: string, link?: string): Promise<APIResponse<void>> {
     try {
       await this.post('/posts', { title, postType: type, text, link }, null, { 
