@@ -43,7 +43,13 @@ export class PostService extends BaseAPI implements IPostService {
       return left(err.response ? err.response.data.message : "Connection failed")
     }
   }
-
+  
+  /**
+   * Get the 15 most recent posts with the number of first level comments for each post
+   * 
+   * @param {number} offset 
+   * @returns {APIResponse<Post[]>}
+   */
   public async getRecentPosts (offset?: number): Promise<APIResponse<Post[]>> {
     try {
       const accessToken = this.authService.getToken('access-token');
@@ -98,6 +104,12 @@ export class PostService extends BaseAPI implements IPostService {
     }
   }
 
+  /**
+   * Get the 5 most popular posts
+   * 
+   * @param {number} offset 
+   * @returns {APIResponse<Post[]>}
+   */
   public async get5PopularPosts(offset?: number): Promise<APIResponse<Post[]>> {
     try {
       const accessToken = this.authService.getToken('access-token');

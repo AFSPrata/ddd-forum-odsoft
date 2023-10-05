@@ -1,4 +1,4 @@
-@startuml ListPopularPosts
+@startuml ListRecentPosts
 actor User
 participant Server
 participant Database
@@ -14,10 +14,14 @@ alt JWT token is valid?
         activate Server #00FF00
         
         note right of Database: The green color\nindicates the place where\nchanges were made
-        Server -> Server: Filter posts data in order to only return the first 5
+        loop through all posts
+            Server -> Database: Get all the comments of the post
+            Server -> Server: Update the number of comments of the post\nbased on the number of comments\nthat does not have a parent comment
+            Server -> Server: Since the returned posts are only the NEW ones,\nupdate background color to light grey
+        end
 
         deactivate Server
-
+        
         Server -> User: Return requested posts data
     else (no)
         Server -> User: Return error message of unabled to process the request
