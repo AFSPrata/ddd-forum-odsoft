@@ -1,8 +1,17 @@
 plugins {
   id "com.github.node-gradle.node" version "7.0.0"
+  id 'java'
 }
 
-task build(type: NodeTask) {
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'net.sourceforge.plantuml:plantuml:1.2021.8'
+}
+
+task buildProject(type: NodeTask) {
   script = file('scripts/gradle/build.js')
 }
 
@@ -27,6 +36,7 @@ task copyFiles(type: Copy) {
 
 task generateJSDoc(type: Exec) {
   dependsOn copyFiles
+  
   commandLine 'node', 'scripts/gradle/generateJSDoc.js'
 
   doLast {
@@ -68,10 +78,17 @@ task generateApiTestCoverageReport(type: Exec) {
   }
 }
 
-task generatePUSDListPopularPosts(type: Exec) {
-  commandLine 'node', 'scripts/gradle/generatePUSDListPopularPosts.js'
+task generatePUMLDiagrams(type: JavaExec) {
+  // Set the classpath for the PlantUML generator
+  classpath = sourceSets.main.runtimeClasspath
 
-  doLast {
-    println 'PlantUML Sequence Diagram of "List Popular Posts" route generated!'
-  }
+  // Set the main class for the PlantUML generator
+  main = 'net.sourceforge.plantuml.Run'
+
+  // Set the input and output directories for the diagrams
+  def inputDir = file('scripts/plantUML')
+  def outputDir = file('images')
+
+  // Set the arguments for the PlantUML generator
+  args = ['-tpng', '-o', outputDir, inputDir]
 }
