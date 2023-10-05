@@ -26,14 +26,14 @@ describe("Posts endpoint", (): void => {
   });
 
   // API Test to check Populat Posts
-  it("Get popular posts", async (): Promise<void> => {
+  it("API Tests - Get popular posts", async (): Promise<void> => {
     const response = await posts.getPopularPosts();
     expect(response.status).toBe(200);
     expect(response.data.posts).toBeDefined();
   });
 
   // API Test to check Recent Posts
-  it("Get recent posts", async (): Promise<void> => {
+  it("API Tests - Get recent posts", async (): Promise<void> => {
     const response = await posts.getRecentPosts();
     expect(response.status).toBe(200);
     expect(response.data.posts).toBeDefined();

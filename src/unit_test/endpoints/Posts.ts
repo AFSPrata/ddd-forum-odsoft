@@ -6,6 +6,8 @@
 import { AxiosResponse } from "axios";
 
 import { AEndpoint } from "./abstracts/AEndpoint";
+import { PostDTO } from "../../modules/forum/dtos/postDTO";
+import { CommentDTO } from "../../modules/forum/dtos/commentDTO";
  
 export default class Posts extends AEndpoint {
   constructor() {
@@ -23,6 +25,15 @@ export default class Posts extends AEndpoint {
     return response;
   }
   public async getRecentPosts(): Promise<AxiosResponse> {
-    return this.restClient.sendGet({ route: "/recent" });
+    let response = await this.restClient.sendGet({ route: "/recent" });
+    
+    return response;
   }
+
+  public async getComments(slug): Promise<AxiosResponse> {
+    let response = await this.restClient.sendGet({route: '/comments?slug=' + slug});
+    
+    return response;
+  }
+
 }
