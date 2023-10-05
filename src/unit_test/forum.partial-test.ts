@@ -7,6 +7,8 @@ import { Logger } from "tslog";
 import ConfigHandler from "./config/ConfigHandler";
 
 import Posts from "./endpoints/Posts";
+import { PostDTO } from "../modules/forum/dtos/postDTO";
+import { CommentDTO } from "../modules/forum/dtos/commentDTO";
 
 const config = ConfigHandler.getInstance();
 const log = new Logger({
@@ -25,18 +27,36 @@ describe("Posts endpoint", (): void => {
     log.debug("1. Posts Base url: "+posts.getBaseUrl());
   });
 
-  // API Test to check Populat Posts
-  it("API Tests - Get popular posts", async (): Promise<void> => {
+  // Unit test for Popular posts
+  it("Unit Tests- Get popular posts", async (): Promise<void> => {
     const response = await posts.getPopularPosts();
     expect(response.status).toBe(200);
     expect(response.data.posts).toBeDefined();
+    expect(response.data.posts.length).toBeLessThanOrEqual(5); // Check if it as the max of 5 posts
   });
 
-  // API Test to check Recent Posts
-  it("API Tests - Get recent posts", async (): Promise<void> => {
+  // Unit test for Recent Post
+  it("Unit Tests - Get recent posts", async (): Promise<void> => {
     const response = await posts.getRecentPosts();
     expect(response.status).toBe(200);
     expect(response.data.posts).toBeDefined();
+
+    await response.data.posts.map(async (p: PostDTO) => {
+      let commentsResponse;
+      let total;
+      try {
+        commentsResponse = await  posts.getComments(p.slug);
+      } catch (error) {
+        commentsResponse = null;
+      }
+      total = p.numComments;
+      
+      if(commentsResponse){
+        p.numComments = commentsResponse.data.comments.filter((c: CommentDTO) => c.parentCommentId === null).length;
+        expect(total).not.toBe(p.numComments);
+      }
+
+    });
   });
 });
 
