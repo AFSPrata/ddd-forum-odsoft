@@ -25,10 +25,18 @@ describe("Posts endpoint", (): void => {
     log.debug("1. Posts Base url: "+posts.getBaseUrl());
   });
 
+  // Unit test for Popular posts
   it("Get popular posts", async (): Promise<void> => {
     const response = await posts.getPopularPosts();
     expect(response.status).toBe(200);
-    
+    expect(response.data.posts).toBeDefined();
+    expect(response.data.posts).toBeLessThanOrEqual(5); // Check if it as the max of 5 posts
+   // expect(response.data.posts[i].numComments >= posts[i + 1].numComments).toBe(true); // check 
+  });
+
+  it("Get recent posts", async (): Promise<void> => {
+    const response = await posts.getRecentPosts();
+    expect(response.status).toBe(200);
     expect(response.data.posts).toBeDefined();
   });
 });

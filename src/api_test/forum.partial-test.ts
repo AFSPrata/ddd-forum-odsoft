@@ -25,13 +25,14 @@ describe("Posts endpoint", (): void => {
     log.debug("1. Posts Base url: "+posts.getBaseUrl());
   });
 
+  // API Test to check Populat Posts
   it("Get popular posts", async (): Promise<void> => {
     const response = await posts.getPopularPosts();
     expect(response.status).toBe(200);
     expect(response.data.posts).toBeDefined();
-    expect(response.data.posts).toBeLessThanOrEqual(5);
   });
 
+  // API Test to check Recent Posts
   it("Get recent posts", async (): Promise<void> => {
     const response = await posts.getRecentPosts();
     expect(response.status).toBe(200);
