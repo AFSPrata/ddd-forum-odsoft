@@ -17,8 +17,34 @@ dependencies {
     implementation 'net.sourceforge.plantuml:plantuml:1.2021.8'
 }
 
+task copyEnv(type: Copy) {
+    from '/'
+  
+    include '.env.template'
+    
+    into '/build'
+
+    rename { String fileName ->
+        fileName.replace('.template', '')
+    }
+
+    doLast {
+        copy {
+            from "$buildDir/.env"
+            into '.'
+        }
+
+        delete "$buildDir/.env"
+    }
+}
+
 task buildProject(type: Exec) {
     dependsOn npmInstall
+    
+    def envfile = file('.env')
+    if (!envfile.exists()) {
+      dependsOn copyEnv
+    }
 
     delete 'dist'
 
@@ -65,9 +91,11 @@ task generateJSDoc(type: Exec) {
 task sequelize(type: Exec) {
     def envfile = file('.env')
 
-    file('.env').readLines().each() {
-        def (key, value) = it.tokenize('=')
-        environment key, value
+    if (envfile.exists()) {
+      file(envfile).readLines().each() {
+          def (key, value) = it.tokenize('=')
+          environment key, value
+      }
     }
 
     environment 'NODE_ENV', 'development'
