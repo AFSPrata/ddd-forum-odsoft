@@ -1,6 +1,12 @@
 plugins {
-  id "com.github.node-gradle.node" version "7.0.0"
-  id 'java'
+    id "com.github.node-gradle.node" version "7.0.0"
+    id 'java'
+}
+
+node {
+    version = '12.22.12'
+    npmVersion = '6.14.16'
+    download = true
 }
 
 repositories {
@@ -11,11 +17,19 @@ dependencies {
     implementation 'net.sourceforge.plantuml:plantuml:1.2021.8'
 }
 
-task buildProject(type: NodeTask) {
-  script = file('scripts/gradle/build.js')
+task buildProject(type: Exec) {
+    dependsOn npmInstall
+
+    delete 'dist'
+
+    commandLine 'node', 'node_modules/typescript/bin/tsc'
 }
 
 task copyFiles(type: Copy) {
+    dependsOn buildProject
+
+    outputs.upToDateWhen { false }
+
     from('dist') {
         include '**/*.js'
         exclude '**/*.js.map'
@@ -35,60 +49,81 @@ task copyFiles(type: Copy) {
 }
 
 task generateJSDoc(type: Exec) {
-  dependsOn copyFiles
-  
-  commandLine 'node', 'scripts/gradle/generateJSDoc.js'
+    dependsOn copyFiles
 
-  doLast {
-    println 'JSDoc Generated!'
+    delete 'docs/jsdoc'
 
-    delete 'copiedJSFiles'
-  }
+    commandLine 'node', 'node_modules/jsdoc/jsdoc.js', '-c', 'jsdoc.json'
+
+    doLast {
+      println 'JSDoc Generated!'
+
+      delete 'copiedJSFiles'
+    }
+}
+
+task sequelize(type: Exec) {
+    def envfile = file('.env')
+
+    file('.env').readLines().each() {
+        def (key, value) = it.tokenize('=')
+        environment key, value
+    }
+
+    environment 'NODE_ENV', 'development'
+
+    commandLine 'node', 'node_modules/sequelize-cli/lib/sequelize', 'db:migrate'
 }
 
 task runAPITests(type: Exec) {
-  commandLine 'node', 'scripts/gradle/runAPITests.js'
+    dependsOn buildProject
 
-  doLast {
-    println 'API Tests executed!'
-  }
+    environment 'VARNODE_ENV', 'development'
+
+    commandLine 'node', 'scripts/db/delete.js'
+
+    environment 'NODE_ENV', 'development'
+
+    commandLine 'node', 'scripts/db/create.js'
+    
+    dependsOn sequelize
 }
 
-task runUnitTest(type: Exec) {
-  commandLine 'node', 'scripts/gradle/runUnitTests.js'
+task runAPITestsWithoutCoverage(type: Exec) {
+    dependsOn runAPITests
 
-  doLast {
-    println 'Unit Tests executed!'
-  }
+    commandLine 'node', 'node_modules/jest/bin/jest.js', '--runInBand', '--testPathPattern', 'api'
 }
 
-task generateUnitTestCoverageReport(type: Exec) {
-  commandLine 'node', 'scripts/gradle/generateUnitTestCoverageReport.js'
+task runApiTestWithCoverage(type: Exec) {
+    dependsOn runAPITests
 
-  doLast {
-    println 'Unit Test Coverage Report Generated!'
-  }
+    commandLine 'node', 'node_modules/jest/bin/jest.js', '--coverage', '--coverageReporters', 'text', 'html', 'json', '--runInBand', '--testPathPattern', 'api'
 }
 
-task generateApiTestCoverageReport(type: Exec) {
-  commandLine 'node', 'scripts/gradle/generateApiTestCoverageReport.js'
+task runUnitTestWithoutCoverage(type: Exec) {
+    dependsOn buildProject
 
-  doLast {
-    println 'Api Test Coverage Report Generated!'
-  }
+    commandLine 'node', 'node_modules/jest/bin/jest.js'
+}
+
+task runUnitTestWithCoverage(type: Exec) {
+    dependsOn buildProject
+
+    commandLine 'node', 'node_modules/jest/bin/jest.js', '--coverage', '--coverageReporters', 'text', 'html', 'json' 
 }
 
 task generatePUMLDiagrams(type: JavaExec) {
-  // Set the classpath for the PlantUML generator
-  classpath = sourceSets.main.runtimeClasspath
+    // Set the classpath for the PlantUML generator
+    classpath = sourceSets.main.runtimeClasspath
 
-  // Set the main class for the PlantUML generator
-  main = 'net.sourceforge.plantuml.Run'
+    // Set the main class for the PlantUML generator
+    mainClass = 'net.sourceforge.plantuml.Run'
 
-  // Set the input and output directories for the diagrams
-  def inputDir = file('scripts/plantUML')
-  def outputDir = file('images')
+    // Set the input and output directories for the diagrams
+    def inputDir = file('scripts/plantUML')
+    def outputDir = file('images')
 
-  // Set the arguments for the PlantUML generator
-  args = ['-tpng', '-o', outputDir, inputDir]
+    // Set the arguments for the PlantUML generator
+    args = ['-tpng', '-o', outputDir, inputDir]
 }
