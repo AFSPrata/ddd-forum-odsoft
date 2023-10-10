@@ -4,6 +4,6 @@
         "includePattern": ".+\\.js"
     },
     "opts": {
-        "destination": "docs"
+        "destination": "docs/jsdoc"
     }
 }
