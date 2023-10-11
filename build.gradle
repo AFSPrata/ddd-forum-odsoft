@@ -126,7 +126,7 @@ task runAPITestsWithoutCoverage(type: Exec) {
 task runApiTestWithCoverage(type: Exec) {
     dependsOn runAPITests
 
-    commandLine 'node', 'node_modules/jest/bin/jest.js', '--coverage', '--coverageReporters', 'text', 'html', 'json', '--runInBand', '--testPathPattern', 'api'
+    commandLine 'node', 'node_modules/jest/bin/jest.js', '--coverage', '--coverageReporters', 'text', 'html', 'json', '--coverageDirectory', './docs/reports/api', '--runInBand', '--testPathPattern', 'api'
 }
 
 task runUnitTestWithoutCoverage(type: Exec) {
@@ -138,7 +138,7 @@ task runUnitTestWithoutCoverage(type: Exec) {
 task runUnitTestWithCoverage(type: Exec) {
     dependsOn buildProject
 
-    commandLine 'node', 'node_modules/jest/bin/jest.js', '--coverage', '--coverageReporters', 'text', 'html', 'json' 
+    commandLine 'node', 'node_modules/jest/bin/jest.js', '--coverage', '--coverageReporters', '--coverageDirectory', './docs/reports/unit', 'text', 'html', 'json' 
 }
 
 task generatePUMLDiagrams(type: JavaExec) {
